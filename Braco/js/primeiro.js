@@ -28,23 +28,29 @@ var criaCubo = function() {
 
 	var geometry2 = new THREE.SphereGeometry(2, 32, 32);
 	var material2 = new THREE.MeshBasicMaterial( { color: 0xffffff } );
+	var material3 = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+
 	cotovelo = new THREE.Mesh(geometry2, material2);
 	cotovelo.position.y -= 5;
 	braco1.add(cotovelo);
 
 	braco2 = new THREE.Mesh(geometry, material);
-	ombro = new THREE.Mesh(geometry2, material2);
-	braco2.position.y -= 11;
+	ombro = new THREE.Mesh(geometry2, material3);
+	braco2.position.y -= 6;
 	ombro.position.y -= 5;
 	braco2.add(ombro);
 
-	braco1.add(braco2);
+	pivot1 = new THREE.Group();
+	pivot1.position.set(0,0,0);
+	pivot1.add(braco2);
 
 	pivot2 = new THREE.Group();
-	pivot2.position.set(0,0,0);
+	pivot2.position.set(0, 0, 0);
 	pivot2.add(braco1);
 
-	scene.add(pivot2);
+	pivot1.add(pivot2);
+
+	scene.add(pivot1);
 	braco1.position.y += pivot2.position.x+5;
 };
 
@@ -67,8 +73,8 @@ var onMouseMove = function(e){
 			y: e.offsetY - posicaoMouser.y,
 		}
 
-		braco1.rotation.x += toRadians(deltaMovimento.y*1)*0.5;
-		braco1.rotation.y += toRadians(deltaMovimento.x*1)*0.5;
+		pivot2.rotation.x += toRadians(deltaMovimento.y*1)*0.5;
+		pivot2.rotation.y += toRadians(deltaMovimento.x*1)*0.5;
 	}
 
 	posicaoMouser = {
@@ -117,6 +123,12 @@ function keyDownHandler(event) {
 			rotationVelocity *=-1;
 		}
 		pivot2.rotation.z += rotationVelocity;
+	}
+	else if (event.keyCode == 13){
+		if (pivot1.rotation.z > 1.7 || pivot1.rotation.z < -1){
+			rotationVelocity *= -1;
+		}
+		pivot1.rotation.z += rotationVelocity;
 	}
 }
 
