@@ -3,15 +3,10 @@
 var scene;
 var camera;
 var renderer;
-var cube;
+var braco1;
+var pivot2;
 var velocidadeCuboX = 0.1;
 var velocidadeCuboY = 0.1;
-
-var rightPressed = false;
-var leftPressed = false;
-var upPressed = false;
-var downPressed = false;
-var spacePressed = false;
 
 var criaCubo = function() {
 	var geometry = new THREE.BoxGeometry(2, 10, 2);
@@ -30,7 +25,6 @@ var criaCubo = function() {
 
 	var material = new THREE.MeshBasicMaterial({color: 0xffffff, vertexColors: true});
 	braco1 = new THREE.Mesh(geometry, material);
-	scene.add(braco1);
 
 	var geometry2 = new THREE.SphereGeometry(2, 32, 32);
 	var material2 = new THREE.MeshBasicMaterial( { color: 0xffffff } );
@@ -38,12 +32,20 @@ var criaCubo = function() {
 	cotovelo.position.y -= 5;
 	braco1.add(cotovelo);
 
-	pivot = new THREE.Group();
-	pivot.position.set(0,0,0);
-	pivot.add(braco1);
+	braco2 = new THREE.Mesh(geometry, material);
+	ombro = new THREE.Mesh(geometry2, material2);
+	braco2.position.y -= 11;
+	ombro.position.y -= 5;
+	braco2.add(ombro);
 
-	scene.add(pivot);
-	braco1.position.y += pivot.position.x+5;
+	braco1.add(braco2);
+
+	pivot2 = new THREE.Group();
+	pivot2.position.set(0,0,0);
+	pivot2.add(braco1);
+
+	scene.add(pivot2);
+	braco1.position.y += pivot2.position.x+5;
 };
 
 var render = function() {
@@ -54,26 +56,36 @@ var render = function() {
 
 var animaCubo = function() {
 	matrizRotacao = new THREE.Matrix4().makeRotationAxis(new THREE.Vector3(0,1,0,1), Math.PI/30.0)
-
-	if (rightPressed && !(this.cube.position.x >= 60))
-		this.cube.position.x += velocidadeCuboX;
-	else if (leftPressed && !(this.cube.position.x <= -60))
-		this.cube.position.x -= velocidadeCuboX;
-	else if (upPressed && !(this.cube.position.y >= 35))
-		this.cube.position.y += velocidadeCuboY;
-	else if (downPressed && !(this.cube.position.y <= -35))
-		this.cube.position.y -= velocidadeCuboY;
-	else if (spacePressed){
-		this.cube.applyMatrix(matrizRotacao);
-	}
 };
+
+var cliquePressionado = false;
+
+var onMouseMove = function(e){
+	if (cliquePressionado){
+		var deltaMovimento = {
+			x: e.offsetX - posicaoMouser.x,
+			y: e.offsetY - posicaoMouser.y,
+		}
+
+		braco1.rotation.x += toRadians(deltaMovimento.y*1)*0.5;
+		braco1.rotation.y += toRadians(deltaMovimento.x*1)*0.5;
+	}
+
+	posicaoMouser = {
+		x: e.offsetX,
+		y: e.offsetY
+	};
+}
 
 var init = function() {
 	scene = new THREE.Scene();
 	camera = new THREE.PerspectiveCamera(40, window.innerWidth/window.innerHeight, 1, 1000);
 
 	document.addEventListener('keydown', keyDownHandler, false);
-	document.addEventListener('keyup', keyUpHandler, false);
+
+	document.addEventListener('mousedown', onMouseDown);
+	document.addEventListener('mouseup', onMouseUp);
+	document.addEventListener('mousemove', onMouseMove);
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth, window.innerHeight);
@@ -88,38 +100,28 @@ var init = function() {
 	render();
 };
 
-function keyDownHandler(event) {
-    if(event.keyCode == 39) {
-        rightPressed = true;
-    }
-    else if(event.keyCode == 37) {
-        leftPressed = true;
-    }
-    if(event.keyCode == 40) {
-    	downPressed = true;
-    }
-    else if(event.keyCode == 38) {
-    	upPressed = true;
-	}
-	if (event.keyCode == 32)
-		spacePressed = true;
+var ci = 0;
+var rotationVelocity = 0.1;
+
+var onMouseDown = function(e){
+	cliquePressionado = true;
 }
 
-function keyUpHandler(event) {
-    if(event.keyCode == 39) {
-        rightPressed = false;
-    }
-    else if(event.keyCode == 37) {
-        leftPressed = false;
-    }
-    if(event.keyCode == 40) {
-    	downPressed = false;
-    }
-    else if(event.keyCode == 38) {
-    	upPressed = false;
+var onMouseUp = function(e){
+	cliquePressionado = false;
+}
+
+function keyDownHandler(event) {
+	if (event.keyCode == 32){
+		if (pivot2.rotation.z > 1.7 || pivot2.rotation.z < -1){
+			rotationVelocity *=-1;
+		}
+		pivot2.rotation.z += rotationVelocity;
 	}
-	if (event.keyCode == 32)
-		spacePressed = false;
+}
+
+function toRadians(angle){
+	return angle * (Math.PI / 180);
 }
 
 window.onload = this.init;
