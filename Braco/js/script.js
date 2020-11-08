@@ -24,34 +24,32 @@ var criaCubo = function() {
 	}
 
 	var material = new THREE.MeshBasicMaterial({color: 0xffffff, vertexColors: true});
-	braco1 = new THREE.Mesh(geometry, material);
 
 	var geometry2 = new THREE.SphereGeometry(2, 32, 32);
 	var material2 = new THREE.MeshBasicMaterial( { color: 0xffffff } );
 	var material3 = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
 
-	cotovelo = new THREE.Mesh(geometry2, material2);
-	cotovelo.position.y -= 5;
-	braco1.add(cotovelo);
-
-	braco2 = new THREE.Mesh(geometry, material);
 	ombro = new THREE.Mesh(geometry2, material3);
-	braco2.position.y -= 6;
-	ombro.position.y -= 5;
-	braco2.add(ombro);
+	braco = new THREE.Mesh(geometry, material);
+
+	braco.position.y -= 5;
+
+	cotovelo = new THREE.Mesh(geometry2, material2);
+	antebraco = new THREE.Mesh(geometry, material);
+
+	antebraco.position.y -= 6;
+	cotovelo.position.y -= 6;
+
+	braco.add(cotovelo);
+	ombro.add(braco);
+	cotovelo.add(antebraco);
+	cotovelo.rotation.z = 12;
 
 	pivot1 = new THREE.Group();
 	pivot1.position.set(0,0,0);
-	pivot1.add(braco2);
-
-	pivot2 = new THREE.Group();
-	pivot2.position.set(0, 0, 0);
-	pivot2.add(braco1);
-
-	pivot1.add(pivot2);
+	pivot1.add(ombro);
 
 	scene.add(pivot1);
-	braco1.position.y += pivot2.position.x+5;
 };
 
 var render = function() {
@@ -73,8 +71,7 @@ var onMouseMove = function(e){
 			y: e.offsetY - posicaoMouser.y,
 		}
 
-		pivot2.rotation.x += toRadians(deltaMovimento.y*1)*0.5;
-		pivot2.rotation.y += toRadians(deltaMovimento.x*1)*0.5;
+		ombro.rotation.y += toRadians(deltaMovimento.y*1.5);
 	}
 
 	posicaoMouser = {
@@ -118,17 +115,21 @@ var onMouseUp = function(e){
 }
 
 function keyDownHandler(event) {
-	if (event.keyCode == 32){
-		if (pivot2.rotation.z > 1.7 || pivot2.rotation.z < -1){
-			rotationVelocity *=-1;
-		}
-		pivot2.rotation.z += rotationVelocity;
+	if (event.keyCode == 38){
+		if (pivot1.rotation.x > -2.60)
+			pivot1.rotation.x -= rotationVelocity;
 	}
-	else if (event.keyCode == 13){
-		if (pivot1.rotation.z > 1.7 || pivot1.rotation.z < -1){
-			rotationVelocity *= -1;
-		}
-		pivot1.rotation.z += rotationVelocity;
+	else if (event.keyCode == 40){
+		if (pivot1.rotation.x < 0.1)
+			pivot1.rotation.x += rotationVelocity;
+	}
+	else if (event.keyCode == 37){
+		if (cotovelo.rotation.z > 10.40)
+			cotovelo.rotation.z -= rotationVelocity;
+	}
+	else if (event.keyCode == 39){
+		if (cotovelo.rotation.z < 12.49)
+		cotovelo.rotation.z += rotationVelocity;
 	}
 }
 
