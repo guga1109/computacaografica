@@ -1,10 +1,6 @@
-
 var scene;
 var camera;
 var renderer;
-
-var velocity = 0.1;
-
 
 var createACube = function() {
     var material = new THREE.MeshBasicMaterial( { color: 0x5d0000, vertexColors: false } );
@@ -73,8 +69,6 @@ var render = function() {
     renderer.render( scene, camera );
 };
 
-var rotationVelocity = 0.1;
-
 var onKeyDown = function(e){
     if(e.keyCode == 37){
        camera.position.x+=-0.1;
@@ -100,7 +94,3 @@ var onKeyDown = function(e){
 }
 
 window.onload = this.init;
-
-function toRadians(angle) {
-	return angle * (Math.PI / 180);
-}
