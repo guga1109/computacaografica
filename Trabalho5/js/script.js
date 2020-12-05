@@ -8,7 +8,9 @@ var spotLight;
 var obj; //objeto dinamico.
 
 var cavalo = [];
+var cavalo2 = [];
 var pato = [];
+var pato2 = [];
 var porco = [];
 var pinguin = [];
 var elefante = [];
@@ -18,7 +20,7 @@ var guiFunction = function(){
 	param = {
 		animal: ""
 	};    
-	var chAnimal = gui.add(param, 'animal', ['cavalo', 'pato', 'porco', 'pinguin', 'elefante']).name("Animal");
+	var chAnimal = gui.add(param, 'animal', ['cavalo', 'pato', 'porco', 'cavalo dois', 'pato dois']).name("Animal");
 	chAnimal.onChange(function(parametroQualquer){
 		if (parametroQualquer == 'cavalo'){
 			console.log(cavalo.position);
@@ -26,15 +28,15 @@ var guiFunction = function(){
 		} else if (parametroQualquer == 'porco'){
 			console.log(porco.position);
 			camera.lookAt(porco.position);
-		} else if (parametroQualquer == 'porco'){
-			console.log(pinguin.position);
-			camera.lookAt(pinguin.position);
-		} else if (parametroQualquer == 'elefante'){
-			console.log(elefante.position);
-			camera.lookAt(elefante.position);
 		} else if (parametroQualquer == 'pato'){
 			console.log(pato.position);
 			camera.lookAt(pato.position);
+		} else if (parametroQualquer == 'cavalo dois'){
+			console.log(cavalo2.position);
+			camera.lookAt(cavalo2.position);
+		} else if (parametroQualquer == 'pato dois'){
+			console.log(pato2.position);
+			camera.lookAt(pato2.position);
 		}
 	});
 	gui.open();
@@ -77,6 +79,25 @@ var loadObj = function(){
 	}, function(andamento) {
 		console.log((andamento.loaded / andamento.total *100) + "% pronto!");
 	}, function (error) { console.log(error); });
+	objLoader.load('assets/cavalo.obj', function(object) {
+		cavalo2 = object;
+		object.traverse(function (child) {
+			if (child instanceof THREE.Mesh) {
+				child.material.color.setHex("0xA17060");
+			}
+		});
+		cavalo2.position.z = 20;
+		cavalo2.position.x = -30;
+        cavalo2.position.y = -2;
+        cavalo2.rotation.x = 4.7;
+        cavalo2.scale.z = 0.2;
+        cavalo2.scale.x = 0.2;
+        cavalo2.scale.y = 0.2;
+		cavalo2.castShadow = true;
+		scene.add(cavalo2);    
+	}, function(andamento) {
+		console.log((andamento.loaded / andamento.total *100) + "% pronto!");
+	}, function (error) { console.log(error); });
 	objLoader.load('assets/pato.obj', function(object) {
 		pato = object;
 		object.traverse(function (child) {
@@ -96,18 +117,22 @@ var loadObj = function(){
 	}, function(andamento) {
 		console.log((andamento.loaded / andamento.total *100) + "% pronto!");
 	}, function (error) { console.log(error); });
-	objLoader.load('assets/elefante.obj', function(object) {
-		elefante = object;
+	objLoader.load('assets/pato.obj', function(object) {
+		pato2 = object;
 		object.traverse(function (child) {
 			if (child instanceof THREE.Mesh) {
-				child.material.color.setHex("0x4cc01e");
+				child.material.color.setHex("0xdeFF04");
 			}
 		});
-		elefante.position.z = 10;
-		elefante.position.x = -150;
-		elefante.position.y = 0;
-		elefante.castShadow = true;
-		scene.add(elefante);    
+		pato2.position.z = 10;
+		pato2.position.x = 30;
+        pato2.position.y = -2;
+        pato2.scale.x = 0.09;
+        pato2.scale.y = 0.09;
+        pato2.scale.z = 0.09;
+        pato2.rotation.x = 4.6;
+		pato2.castShadow = true;
+		scene.add(pato2);    
 	}, function(andamento) {
 		console.log((andamento.loaded / andamento.total *100) + "% pronto!");
 	}, function (error) { console.log(error); });
@@ -128,21 +153,6 @@ var loadObj = function(){
         porco.rotation.y = 25.3;
 		porco.castShadow = true;
 		scene.add(porco);    
-	}, function(andamento) {
-		console.log((andamento.loaded / andamento.total *100) + "% pronto!");
-	}, function (error) { console.log(error); });
-	objLoader.load('assets/pinguin.obj', function(object) {
-		pinguin = object;
-		object.traverse(function (child) {
-			if (child instanceof THREE.Mesh) {
-				child.material.color.setHex("0x69456a");
-			}
-		});
-		pinguin.position.z = -20;
-		pinguin.position.x = -20;
-		pinguin.position.y = 20;
-		pinguin.castShadow = true;
-		scene.add(pinguin);    
 	}, function(andamento) {
 		console.log((andamento.loaded / andamento.total *100) + "% pronto!");
 	}, function (error) { console.log(error); });
